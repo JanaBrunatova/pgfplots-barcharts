@@ -1,0 +1,154 @@
+\documentclass{standalone}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{pgfplots}
+\usepgfplotslibrary{groupplots}
+\pgfplotsset{compat=newest} 
+
+% define colors
+\newcommand{\colorI}{cyan}
+\newcommand{\colorIII}{magenta}
+\newcommand{\colorII}{yellow}
+\newcommand{\colorIV}{green}
+
+
+\begin{document}
+
+% set the style for all 4 plots
+\pgfplotsset{
+            every axis plot/.style={line width=0.5pt},
+            /pgf/bar width=8pt, % set the width of the bars
+            every axis post/.append style={xmin=0, xmax=10, ymin=0, ymax=1.5, % set the limits on both axis
+                xticklabel={$\pgfmathprintnumber{\tick}\%$}, % since we want to read the numbers from our tables and add the percentage sign
+                enlarge x limits={abs=2.5}, % enlarge the x-axis 
+                }
+            }
+
+% read the tables from text files
+\pgfplotstableread{data/tableA.txt}{\tableA}
+\pgfplotstableread{data/tableB.txt}{\tableB}
+\pgfplotstableread{data/tableC.txt}{\tableC}
+\pgfplotstableread{data/tableD.txt}{\tableD}
+
+
+
+\begin{tikzpicture}
+
+\begin{groupplot}[
+        group style={
+        {group size=2 by 2}}, height=6cm, width=.5\textwidth,legend style={
+        transpose legend,
+        legend columns=0,
+        % draw=none, % if you want to hide the frame around legend
+        /tikz/every even column/.append style={column sep=5pt}},
+        ybar,
+        xtick=data,
+        tickpos=left,
+        ytick align=inside,
+    	xtick align=inside,
+        x tick label style={ align=center},
+        legend image code/.code={\draw (0cm,-0.2cm) rectangle (0.2cm,0.25cm);},
+        ]
+    \nextgroupplot[%title={Title}, 
+        legend to name=grouplegend,
+        ylabel={Label},
+        ]
+        
+        \draw[ystep=.25,xstep=-1,gray,very thin,dashed] (-5,0) grid (15,1.5); % grey dashed lines to help reading the chart; the coordinates are set manually     
+        
+        \addplot[draw=black,fill=\colorI,error bars/.cd,y dir=both,y explicit] % change the colors if you wish
+            table[x index=0,y index=1,y error plus index=2,y error minus index=2] {\tableA}; % change the indices if necessary
+            \addlegendentry{A} % change the legend entry
+        
+        \addplot[draw=black,fill=\colorII,error bars/.cd,y dir=both,y explicit] 
+            table[x index=0,y index=3,y error plus index=4,y error minus index=4] {\tableA};
+            \addlegendentry{B}
+            
+        \addplot[draw=black,fill=\colorIII,error bars/.cd,y dir=both,y explicit] 
+            table[x index=0,y index=5,y error plus index=6,y error minus index=6] {\tableA}; 
+            \addlegendentry{C}
+        
+        \addplot[draw=black,fill=\colorIV,error bars/.cd,y dir=both,y explicit] 
+            table[x index=0,y index=7,y error plus index=8,y error minus index=8] {\tableA}; 
+            \addlegendentry{D}
+
+    \nextgroupplot%[title=Title]
+    
+    	\draw[ystep=.25,xstep=-1,gray,very thin,dashed] (-5,0) grid (15,1.5);        
+
+        \addplot[draw=black,fill=\colorI,error bars/.cd,y dir=both,y explicit] 
+            table[x index=0,y index=1,y error plus index=2,y error minus index=2] {\tableB};
+        
+        \addplot[draw=black,fill=\colorII,error bars/.cd,y dir=both,y explicit] 
+            table[x index=0,y index=3,y error plus index=4,y error minus index=4] {\tableB};
+            
+        \addplot[draw=black,fill=\colorIII,error bars/.cd,y dir=both,y explicit] 
+            table[x index=0,y index=5,y error plus index=6,y error minus index=6] {\tableB}; 
+        
+        \addplot[draw=black,fill=\colorIV,error bars/.cd,y dir=both,y explicit] 
+            table[x index=0,y index=7,y error plus index=8,y error minus index=8] {\tableB}; 
+
+
+    \nextgroupplot[yshift=-2\pgfkeysvalueof{/pgfplots/every axis title shift},
+        ylabel={Label}]
+        
+        \draw[ystep=.25,xstep=-1,gray,very thin,dashed] (-5,0) grid (15,1.5);        
+        
+        \addplot[draw=black,fill=\colorI,error bars/.cd,y dir=both,y explicit] 
+            table[x index=0,y index=1,y error plus index=2,y error minus index=2] {\tableC};
+        
+        \addplot[draw=black,fill=\colorII,error bars/.cd,y dir=both,y explicit] 
+            table[x index=0,y index=3,y error plus index=4,y error minus index=4] {\tableC};
+            
+        \addplot[draw=black,fill=\colorIII,error bars/.cd,y dir=both,y explicit] 
+            table[x index=0,y index=5,y error plus index=6,y error minus index=6] {\tableC}; 
+        
+        \addplot[draw=black,fill=\colorIV,error bars/.cd,y dir=both,y explicit] 
+            table[x index=0,y index=7,y error plus index=8,y error minus index=8] {\tableC}; 
+
+        
+    \nextgroupplot[yshift=-2\pgfkeysvalueof{/pgfplots/every axis title shift}]
+		
+		\draw[ystep=.25,xstep=-1,gray,very thin,dashed] (-5,0) grid (15,1.5); 		
+		
+        \addplot[draw=black,fill=\colorI,error bars/.cd,y dir=both,y explicit] 
+            table[x index=0,y index=1,y error plus index=2,y error minus index=2] {\tableD};
+        
+        \addplot[draw=black,fill=\colorII,error bars/.cd,y dir=both,y explicit] 
+            table[x index=0,y index=3,y error plus index=4,y error minus index=4] {\tableD};
+            
+        \addplot[draw=black,fill=\colorIII,error bars/.cd,y dir=both,y explicit] 
+            table[x index=0,y index=5,y error plus index=6,y error minus index=6] {\tableD}; 
+        
+        \addplot[draw=black,fill=\colorIV,error bars/.cd,y dir=both,y explicit] 
+            table[x index=0,y index=7,y error plus index=8,y error minus index=8] {\tableD}; 
+
+        
+\end{groupplot}
+
+% add a legend
+\node at ($(group c1r2.south)!0.5!(group c2r2.south)$) [below, yshift=-4\pgfkeysvalueof{/pgfplots/every axis title shift}]{\ref{grouplegend}};
+
+% add captions
+\node at ([below,yshift=-2\pgfkeysvalueof{/pgfplots/every axis title shift}]group c1r1.south) {
+    (a) Caption A % change the caption
+};
+
+\node at ([below,yshift=-2\pgfkeysvalueof{/pgfplots/every axis title shift}]group c2r1.south) {
+    (b) Caption B
+};
+
+\node at ([below,yshift=-2\pgfkeysvalueof{/pgfplots/every axis title shift}]group c1r2.south) {
+    (c) Caption C
+};
+
+\node at ([below,yshift=-2\pgfkeysvalueof{/pgfplots/every axis title shift}]group c2r2.south) {
+    (d) Caption D
+};
+
+\end{tikzpicture}
+
+
+\end{document}
